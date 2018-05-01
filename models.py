@@ -2,7 +2,7 @@
 from __future__ import division
 
 import theano
-import cPickle
+import _pickle as cPickle
 import os
 import theano.tensor as T
 import numpy as np
@@ -47,12 +47,12 @@ def weights_Glorot(i, o, name, rng, is_logistic_sigmoid=False, keepdims=False):
 
 def load(file_path, minibatch_size, x, p=None):
     import models
-    import cPickle
+    import _pickle as cPickle
     import theano
     import numpy as np
 
     with open(file_path, 'rb') as f:
-        state = cPickle.load(f)
+        state = cPickle.load(f, encoding='latin1')
 
     Model = getattr(models, state["type"])
 
@@ -128,7 +128,7 @@ class GRU(object):
         # input model
         pretrained_embs_path = "We.pcl"
         if os.path.exists(pretrained_embs_path):
-            print "Found pretrained embeddings in '%s'. Using them..." % pretrained_embs_path
+            print ("Found pretrained embeddings in '%s'. Using them..." % pretrained_embs_path)
             with open(pretrained_embs_path, 'rb') as f:
                 We = cPickle.load(f)
             n_emb = len(We[0])
@@ -211,7 +211,7 @@ class GRU(object):
             non_sequences=[self.Wa_h, self.Wa_y, self.Wf_h, self.Wf_c, self.Wf_f, self.bf, self.Wy, self.by, context, projected_context],
             outputs_info=[self.GRU.h0, None, None, None])
 
-        print "Number of parameters is %d" % sum(np.prod(p.shape.eval()) for p in self.params)
+        print ("Number of parameters is %d" % sum(np.prod(p.shape.eval()) for p in self.params))
 
         self.L1 = sum(abs(p).sum() for p in self.params)
         self.L2_sqr = sum((p**2).sum() for p in self.params)
@@ -222,7 +222,7 @@ class GRU(object):
         return -T.sum(T.log(output[T.arange(num_outputs), y.flatten()]))
 
     def save(self, file_path, gsums=None, learning_rate=None, validation_ppl_history=None, best_validation_ppl=None, epoch=None, random_state=None):
-        import cPickle
+        import _pickle as cPickle
         state = {
             "type":                     self.__class__.__name__,
             "n_hidden":                 self.n_hidden,
@@ -276,8 +276,8 @@ class GRUstage2(GRU):
             non_sequences=[self.Wy, self.by],
             outputs_info=[self.GRU.h0, None])
 
-        print "Number of parameters is %d" % sum(np.prod(p.shape.eval()) for p in self.params)
-        print "Number of parameters with stage1 params is %d" % sum(np.prod(p.shape.eval()) for p in self.params + self.stage1.params)
+        print ("Number of parameters is %d" % sum(np.prod(p.shape.eval()) for p in self.params))
+        print ("Number of parameters with stage1 params is %d" % sum(np.prod(p.shape.eval()) for p in self.params + self.stage1.params))
 
         self.L1 = sum(abs(p).sum() for p in self.params)
         self.L2_sqr = sum((p**2).sum() for p in self.params)

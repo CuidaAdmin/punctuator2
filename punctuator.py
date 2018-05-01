@@ -134,10 +134,10 @@ if __name__ == "__main__":
     
         p = T.matrix('p')
 
-        print "Loading model parameters..."
+        print ("Loading model parameters...")
         net, _ = models.load(model_file, 1, x, p)
 
-        print "Building model..."
+        print ("Building model...")
         predict = theano.function(
             inputs=[x, p],
             outputs=net.y
@@ -145,14 +145,18 @@ if __name__ == "__main__":
 
     else:
 
-        print "Loading model parameters..."
+        print ("Loading model parameters...")
         net, _ = models.load(model_file, 1, x)
 
-        print "Building model..."
+        print ("Building model...")
         predict = theano.function(
             inputs=[x],
             outputs=net.y
         )
+
+        #import timeit, functools
+        #t = timeit.Timer(functools.partial(theano.function, inputs=[x],outputs=net.y))
+        #print ('timeit', t.timeit(10))
 
     word_vocabulary = net.x_vocabulary
     punctuation_vocabulary = net.y_vocabulary
@@ -160,7 +164,7 @@ if __name__ == "__main__":
     reverse_word_vocabulary = {v:k for k,v in word_vocabulary.items()}
     reverse_punctuation_vocabulary = {v:k for k,v in punctuation_vocabulary.items()}
 
-    input_text = codecs.getreader('utf-8')(sys.stdin).read()
+    input_text = sys.stdin.read()
 
     if len(input_text) == 0:
         sys.exit("Input text from stdin missing.")

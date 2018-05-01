@@ -75,4 +75,4 @@ with codecs.open(sys.argv[2], 'w', 'utf-8') as out_txt:
 
             out_txt.write(line + '\n')
 
-print "Skipped %d lines" % skipped
+print ("Skipped %d lines" % skipped)

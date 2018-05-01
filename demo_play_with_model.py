@@ -106,10 +106,10 @@ if __name__ == "__main__":
 
     x = T.imatrix('x')
 
-    print "Loading model parameters..."
+    print ("Loading model parameters...")
     net, _ = models.load(model_file, 1, x)
 
-    print "Building model..."
+    print ("Building model...")
     predict = theano.function(inputs=[x], outputs=net.y)
     word_vocabulary = net.x_vocabulary
     punctuation_vocabulary = net.y_vocabulary

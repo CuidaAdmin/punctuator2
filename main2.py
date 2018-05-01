@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
     model_file_name = "Model_stage2_%s_h%d_lr%s.pcl" % (model_name, num_hidden, learning_rate)
 
-    print num_hidden, learning_rate, model_file_name
+    print (num_hidden, learning_rate, model_file_name)
 
     word_vocabulary = data.read_vocabulary(data.WORD_VOCAB_FILE)
     punctuation_vocabulary = data.iterable_to_dict(data.PUNCTUATION_VOCABULARY)
@@ -82,7 +82,7 @@ if __name__ == "__main__":
         rng = np.random
         rng.seed(1)
 
-        print "Building model..."
+        print ("Building model...")
         net = models.GRUstage2(
             rng=rng,
             x=x,
@@ -132,7 +132,7 @@ if __name__ == "__main__":
         outputs=net.cost(y)
     )
 
-    print "Training..."
+    print ("Training...")
     for epoch in range(starting_epoch, MAX_EPOCHS):
         t0 = time()
         total_neg_log_likelihood = 0
@@ -145,23 +145,23 @@ if __name__ == "__main__":
             if iteration % 100 == 0:
                 sys.stdout.write("PPL: %.4f; Speed: %.2f sps\n" % (np.exp(total_neg_log_likelihood / total_num_output_samples), total_num_output_samples / max(time() - t0, 1e-100)))
                 sys.stdout.flush()
-        print "Total number of training labels: %d" % total_num_output_samples
+        print ("Total number of training labels: %d" % total_num_output_samples)
 
         total_neg_log_likelihood = 0
         total_num_output_samples = 0
         for X, Y, P in get_minibatch(data.DEV_FILE2, MINIBATCH_SIZE, shuffle=False, with_pauses=True):
             total_neg_log_likelihood += validate_model(X, P, Y)
             total_num_output_samples += np.prod(Y.shape)
-        print "Total number of validation labels: %d" % total_num_output_samples
+        print ("Total number of validation labels: %d" % total_num_output_samples)
 
         ppl = np.exp(total_neg_log_likelihood / total_num_output_samples)
         validation_ppl_history.append(ppl)
 
-        print "Validation perplexity is %s" % np.round(ppl, 4)
+        print ("Validation perplexity is %s" % np.round(ppl, 4))
 
         if ppl <= best_ppl:
             best_ppl = ppl
             net.save(model_file_name, gsums=gsums, learning_rate=learning_rate, validation_ppl_history=validation_ppl_history, best_validation_ppl=best_ppl, epoch=epoch, random_state=rng.get_state())
         elif best_ppl not in validation_ppl_history[-PATIENCE_EPOCHS:]:
-            print "Finished!"
+            print ("Finished!")
             break
