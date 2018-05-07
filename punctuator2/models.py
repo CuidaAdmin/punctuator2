@@ -46,7 +46,6 @@ def weights_Glorot(i, o, name, rng, is_logistic_sigmoid=False, keepdims=False):
     return theano.shared(value=W_values, name=name, borrow=True)
 
 def load(file_path, minibatch_size, x, p=None):
-    import models
     import _pickle as cPickle
     import theano
     import numpy as np
@@ -54,7 +53,7 @@ def load(file_path, minibatch_size, x, p=None):
     with open(file_path, 'rb') as f:
         state = cPickle.load(f, encoding='latin1')
 
-    Model = getattr(models, state["type"])
+    Model = globals().get(state["type"])
 
     rng = np.random
     rng.set_state(state["random_state"])
