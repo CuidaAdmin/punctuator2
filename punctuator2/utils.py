@@ -19,10 +19,10 @@ def prepare_for_punctuate(model_name):
     else:
         x = T.imatrix('x')
 
-        print("Loading model parameters...")
+        print("punctuator: thread-%d loading model %s" % (get_ident(), model_name))
         net, _ = models.load(model_name, 1, x)
 
-        print("Building model...")
+        print("punctuator: building model")
         predict = theano.function(
             inputs=[x],
             outputs=net.y
